@@ -1,0 +1,3 @@
+# Constantes
+
+foo="bar"
