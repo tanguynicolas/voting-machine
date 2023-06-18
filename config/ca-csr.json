@@ -1,0 +1,19 @@
+{
+    "CN": "CA",
+    "hosts": [
+        "CA"
+    ],
+    "key": {
+        "algo": "rsa",
+        "size": 4096
+    },
+    "names": [
+        {
+            "C":  "FR",
+            "L":  "Amiens",
+            "O":  "UPJV",
+            "OU": "UFR des Sciences",
+            "ST": "Picardie"
+        }
+    ]
+}

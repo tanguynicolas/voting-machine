@@ -32,3 +32,22 @@ Projet universitaire de machine à voter pour élections officielles.
    - Les votes sont ensuite déchifrée puis analyser
    - Les résultat sont ensuite envoyer a la préfecture en utilisant TLS
    - Si un votant souhaite verifier que sont vote a bien été pris en compte il peut reconstruire la signature de cercle de sont bureau. Il compare ensuite cette signature a la liste publier par la préfecture.
+
+## Dépendances
+
+Il faut avoir cfssl et cfssljson d'installé.
+
+```bash
+wget "https://github.com/cloudflare/cfssl/releases/download/v1.6.4/cfssl_1.6.4_linux_amd64"
+wget "https://github.com/cloudflare/cfssl/releases/download/v1.6.4/cfssljson_1.6.4_linux_amd64"
+chmod +x cfssl*ls
+sudo mv cfssl_1.6.4_linux_amd64 /usr/local/bin/cfssl
+sudo mv cfssljson_1.6.4_linux_amd64 /usr/local/bin/cfssljson
+```
+
+## Utilisation de cfssl
+
+Generating self-signed root CA certificate and private key.
+```bash
+cfssl genkey -initca config/ca-csr.json | cfssljson -bare data/ca
+```

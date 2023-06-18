@@ -1,0 +1,15 @@
+{
+    "signing": {
+        "profiles": {
+            "MACHINE": {
+                "usages": ["signing", "key encipherment", "server auth", "client auth"],
+                "expiry": "720h",
+                "auth_key": "ca-auth",
+                "remote": "localhost"
+            }
+        },
+        "default": {
+            "expiry": "8000h"
+        }
+    }
+}

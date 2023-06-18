@@ -1,1 +1,7 @@
 .vscode/
+
+*.key
+*.pub
+*.csr
+*.crt
+*.pem
