@@ -38,4 +38,10 @@ done
 
 ### Coeur du script
 
-echo "$foo"
+echo -e "This is... not colored."
+echo -e "${cGreen}This is... colored${nc}."
+echo -e "${cBlue}This is... colored${nc}."
+echo -e "${cCyan}This is... colored${nc}."
+echo -e "${cYellow}This is... colored${nc}."
+echo -e "${cOrange}This is... colored${nc}."
+echo -e "${cRed}This is... colored${nc}."
