@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Affectation d'un isoloir à un utilisateur si elle est bien inscrite dans la liste électorale.
+# Affectation d'un isoloir à un utilisateur si il est bien inscrit sur la liste électorale.
 
 nombre_isoloirs=5
 
