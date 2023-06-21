@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -eu
 #
 # Script principal.
 
@@ -6,12 +6,12 @@ LOCAL_DIR=$(cd "$( dirname "${BASH_SOURCE[0]}")" && pwd)
 source "$LOCAL_DIR/constants.sh"
 
 err() {
-    echo "[$(date +'%Y-%m-%d')]: $*" >&2
+    echo "${cOrange}[${nc}$(date +'%Y-%m-%d')${cOrange}]${nc} ${cRed}ERR${nc}: $*" >&2
 }
 
 usage() {
-    echo -e "\nUse: ./$(basename "$0")\n"
-    echo -e "Type:\n   -h to display this help\n"
+    echo -e "\n${cGreen}Use${nc}: ./$(basename "$0")\n"
+    echo -e "${cGreen}Type${nc}:\n   -h to display this help\n"
 }
 
 ### Gestion des paramètres
@@ -26,8 +26,7 @@ eval set -- "$options" # eval for remove simple quote
 while true; do
     case "$1" in
         -h|--help)
-            usage
-	        shift;;
+            usage; exit 0;;
         --)
             shift; break;;
         *)
@@ -38,10 +37,17 @@ done
 
 ### Coeur du script
 
-echo -e "This is... not colored."
-echo -e "${cGreen}This is... colored${nc}."
-echo -e "${cBlue}This is... colored${nc}."
-echo -e "${cCyan}This is... colored${nc}."
-echo -e "${cYellow}This is... colored${nc}."
-echo -e "${cOrange}This is... colored${nc}."
-echo -e "${cRed}This is... colored${nc}."
+echo -e "\n${cBlue}Nettoyage${nc} des fichiers de logs 🧹"
+truncate --size 0 "$LOCAL_DIR/"{"$s_prefecture","$s_bureau_vote","$s_machine_vote"}
+
+echo -e "\n${cCyan}${aBold}Affectation${nc} de l'utilisateur 🪪"
+source "$LOCAL_DIR/affectation.sh"
+
+echo -e "\n${cCyan}${aBold}Connexion${nc} de l'utilisateur 🔒"
+source "$LOCAL_DIR/connexion.sh"
+
+echo -e "\n${cCyan}${aBold}Vote${nc} de l'utilisateur 🗳️"
+source "$LOCAL_DIR/vote.sh"
+
+echo -e "\n${cCyan}${aBold}Dépouillement${nc} du scrutin 📺"
+source "$LOCAL_DIR/depouillement.sh"

@@ -2,6 +2,10 @@
 
 Projet universitaire de machine à voter pour élections officielles.
 
+## Information sur le programme
+
+Les informations affichés clignotantes sont celles qui sont affichés sur un écran présent dans le bureau de vote.
+
 ## Procédure
 
 1. A trouver
