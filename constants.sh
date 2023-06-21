@@ -11,3 +11,7 @@ cCyan='\e[38;5;50m'
 cYellow='\e[38;5;184m'
 cOrange='\e[38;5;214m'
 cRed='\e[38;5;160m'
+
+s_prefecture="prefecture.log"
+s_bureau_vote="bureau_vote.log"
+s_machine_vote="machine_vote.log"
