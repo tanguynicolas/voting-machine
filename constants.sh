@@ -16,9 +16,10 @@ cOrange='\e[38;5;214m'  # Error1
 cRed='\e[38;5;160m'     # Error2
 aBold='\e[1m'
 aBlink='\e[5m'
+nBlink='\e[25m'
 
 data_dir="data"
-db_identities="$data_dir/identities.dat"
+db_liste_electorale="$data_dir/liste_electorale.dat"
 
 temp_dir="temp"
 
