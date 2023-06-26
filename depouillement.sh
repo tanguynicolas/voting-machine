@@ -16,8 +16,8 @@ echo "Mélange de la liste des votes" >> $s_bureau_vote
 
 sort -R $db_liste_votes
 
-echo "La préfecture donne sa clé privée au bureau de vote" >> $s_bureau_vote
-echo "Le bureau de vote donne sa clé privé à la préfecture" >> $s_bureau_vote
+echo "La préfecture donne sa clé privée au bureau de vote en utilisant TLS" >> $s_bureau_vote
+echo "Le bureau de vote donne sa clé privé à la préfecture en utilisant TLS" >> $s_bureau_vote
 
 echo "Le bureau de vote déchiffre et comptabilise les votes" >> $s_bureau_vote
 while read line;do
