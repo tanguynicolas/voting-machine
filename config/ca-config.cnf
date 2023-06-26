@@ -93,7 +93,7 @@ serial		= $dir/serial 		# The current serial number
 #crlnumber	= $dir/crl/crlnumber	# the current crl number
 					# must be commented out to leave a V1 CRL
 #crl		= $dir/crl/crl.pem 		# The current CRL
-private_key	= $dir/CA.key # The private key
+private_key	= $dir/CA_priv.key # The private key
 
 x509_extensions	= usr_cert		# The extensions to add to the cert
 
