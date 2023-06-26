@@ -23,6 +23,8 @@ db_liste_electorale="$data_dir/liste_electorale.dat"
 
 temp_dir="temp"
 
+config_dir="config"
+
 logs_dir="logs"
 s_prefecture="$logs_dir/prefecture.log"
 s_bureau_vote="$logs_dir/bureau_vote.log"
