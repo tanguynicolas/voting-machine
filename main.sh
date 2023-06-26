@@ -37,8 +37,9 @@ done
 
 ### Coeur du script
 
-echo -e "\n${cBlue}Nettoyage${nc} des fichiers de logs 🧹"
+echo -e "\n${cBlue}Nettoyage${nc} des fichiers de logs et du répertoire temporaire 🧹"
 truncate --size 0 "$LOCAL_DIR/"{"$s_prefecture","$s_bureau_vote","$s_machine_vote"}
+rm -rf "$LOCAL_DIR/$temp_dir/*"
 
 echo -e "\n${cCyan}${aBold}Affectation${nc} de l'utilisateur 🪪"
 source "$LOCAL_DIR/affectation.sh"
