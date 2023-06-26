@@ -41,14 +41,14 @@ echo -e "\n${cBlue}Nettoyage${nc} des fichiers de logs et du répertoire tempora
 truncate --size 0 "$LOCAL_DIR/"{"$s_prefecture","$s_bureau_vote","$s_machine_vote"}
 rm -rf "$LOCAL_DIR/$temp_dir/*"
 
-echo -e "\n${cCyan}${aBold}Affectation${nc} de l'utilisateur 🪪"
-source "$LOCAL_DIR/affectation.sh"
+#echo -e "\n${cCyan}${aBold}Affectation${nc} de l'utilisateur 🪪"
+#source "$LOCAL_DIR/affectation.sh"
 
-echo -e "\n${cCyan}${aBold}Connexion${nc} de l'utilisateur 🔒"
-source "$LOCAL_DIR/connexion.sh"
+#echo -e "\n${cCyan}${aBold}Connexion${nc} de l'utilisateur 🔒"
+#source "$LOCAL_DIR/connexion.sh"
 
 echo -e "\n${cCyan}${aBold}Vote${nc} de l'utilisateur 🗳️"
 source "$LOCAL_DIR/vote.sh"
 
-echo -e "\n${cCyan}${aBold}Dépouillement${nc} du scrutin 📺"
-source "$LOCAL_DIR/depouillement.sh"
+#echo -e "\n${cCyan}${aBold}Dépouillement${nc} du scrutin 📺"
+#source "$LOCAL_DIR/depouillement.sh"

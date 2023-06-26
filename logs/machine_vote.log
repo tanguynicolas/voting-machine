@@ -1,0 +1,10 @@
+------ Début signature de cercle ------
+Generation de la signature de cercle en utilisant les clés publique des autres membres
+Envoie de cette signature à la carte a puce pour signer avec la clé priver du votant
+------ Fin signature de cercle ------
+------ Début chiffrement du vote ------
+Chiffrement du vote avec un sel et la clé publique du bureau de vote
+Re chiffrement du vote avec la clé publique de la préfecture
+------ Fin chiffrement du vote ------
+Génération d'un identifiant pour le message
+Envoie du message au serveur du bureau de vote à l'aide de TLS
