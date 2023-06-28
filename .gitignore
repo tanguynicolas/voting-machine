@@ -5,3 +5,8 @@
 *.csr
 *.crt
 *.pem
+
+index.txt
+aes_key.txt
+ca-config.cnf
+serial
