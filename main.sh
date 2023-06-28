@@ -50,5 +50,5 @@ rm -rf "$LOCAL_DIR/$temp_dir/*"
 echo -e "\n${cCyan}${aBold}Vote${nc} de l'utilisateur 🗳️"
 source "$LOCAL_DIR/vote.sh"
 
-#echo -e "\n${cCyan}${aBold}Dépouillement${nc} du scrutin 📺"
-#source "$LOCAL_DIR/depouillement.sh"
+echo -e "\n${cCyan}${aBold}Dépouillement${nc} du scrutin 📺"
+source "$LOCAL_DIR/depouillement.sh"

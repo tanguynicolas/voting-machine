@@ -5,9 +5,9 @@
 
 echo -e "Liste des candidats : "
 while read line;do
-    num=$(echo $line | cut -d ';' -f 1)
-    nom=$(echo $line | cut -d ';' -f 3)
-    pre=$(echo $line | cut -d ';' -f 2)
+    num=$(echo "$line" | cut -d ';' -f 1)
+    nom=$(echo "$line" | cut -d ';' -f 3)
+    pre=$(echo "$line" | cut -d ';' -f 2)
     echo -e "  [$num] $pre $nom "
 done < $LOCAL_DIR/$db_liste_candidats
 
@@ -21,32 +21,39 @@ else
     exit 0
 fi
 
-### Signature en cercle 
-echo "------ Début signature de cercle ------" >> $s_machine_vote
-signature=$(openssl rand -base64 10)
 
-echo "Generation de la signature de cercle en utilisant les clés publique des autres membres" >> $s_machine_vote
-echo "Envoie de cette signature à la carte a puce pour signer avec la clé priver du votant" >> $s_machine_vote
-echo "------ Fin signature de cercle ------" >> $s_machine_vote
+echo "######### Nouveau vote #########" >> "$s_machine_vote"
+
+
+### Signature
+echo "------> Signature" >> "$s_machine_vote"
+
+signature=$(openssl dgst -sha256 -passin pass:azerty -sign temp/pki/votants/01_priv.key init.sh  | openssl base64 -e)
+echo "Generation de la signature de cercle en utilisant les clés publique des autres membres" >> "$s_machine_vote"
+echo "Envoie de cette signature à la carte a puce pour signer avec la clé priver du votant" >> "$s_machine_vote"
+echo -e "La signature de votre vote est : \n$signature"
 
 ### Chiffrement du vote
-echo "------ Début chiffrement du vote ------" >> $s_machine_vote
-echo "Chiffrement du vote avec un sel et la clé publique du bureau de vote" >> $s_machine_vote
-echo "Re chiffrement du vote avec la clé publique de la préfecture" >> $s_machine_vote
+echo "------> Chiffrement du vote" >> "$s_machine_vote"
 
-#openssl rsautl -encrypt -inkey tmp2/serveur_RSA-pub.key -pubin -in tmp2/pms.dat -out tmp2/pms-chif.dat
-#openssl rsautl -decrypt -inkey local/serveur_RSA.key -in tmp2/pms-chif.dat -out tmp2/pms-dec.dat
-
-vote="le vote"
-echo "------ Fin chiffrement du vote ------" >> $s_machine_vote
+echo "Chiffrement du vote avec un sel et la clé publique du bureau de vote" >> "$s_machine_vote"
+sel=$(openssl rand -base64 10)
+vote="${choix};${sel}"
+vote=$(echo "$vote" | openssl enc -aes-256-cbc -salt -pass file:temp/pki/machine/aes_key.txt 2> /dev/null | openssl base64 -e)
+# echo "$vote" | openssl base64 -d | openssl enc -aes-256-cbc -d -pass file:temp/pki/machine/aes_key.txt 2> /dev/null
 
 ### Envoi du message
-echo "------ Début envoi du message ------" >> $s_machine_vote
-echo "Génération d'un identifiant pour le message" >> $s_machine_vote
+echo "------> Envoi du message" >> "$s_machine_vote"
+echo "Génération d'un identifiant pour le message" >> "$s_machine_vote"
 
-id_vote=$(( RANDOM % 100 + 1 ))
+id_vote=$(( RANDOM % 1000 + 1 ))
 message="${id_vote};${signature};${vote}"
 
-echo "Envoie du message au serveur du bureau de vote à l'aide de TLS" >> $s_machine_vote
-# id_vote+signature+EncKP(EncKBV(vote+aléa))
-echo "------ Fin envoi du message ------" >> $s_machine_vote
+#### SEND TLS
+echo $message > "$db_liste_messages"
+
+# echo $signature | openssl base64 -d > signature.bin
+# echo $message | cut -d ';' -f 2 | openssl base64 -d | openssl dgst -sha256 -passin pass:azerty -verify temp/pki/votants/01_pub.key -signature signature.bin init.sh
+# echo $message | cut -d ';' -f 3 | openssl base64 -d | openssl enc -aes-256-cbc -d -pass file:temp/pki/machine/aes_key.txt 2> /dev/null
+
+echo "Message envoyé au serveur du bureau de vote à l'aide de TLS" >> $s_machine_vote
