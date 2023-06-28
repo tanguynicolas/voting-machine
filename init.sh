@@ -29,9 +29,9 @@ cp "$LOCAL_DIR/$config_dir/ca-config.cnf" "$LOCAL_DIR/$temp_dir/pki/etat/"
 
 #Creation de l'autorite intermediaire (Prefecture)
 openssl genrsa -aes256 -out "$LOCAL_DIR/$temp_dir/pki/prefecture/CA_interm_priv.key" -passout pass:azerty 4096
-openssl rsa -in "$LOCAL_DIR/$temp_dir/pki/prefecture/CA_interm_priv.key" -passin pass:azerty -pubout > "$LOCAL_DIR/$temp_dir/pki/etat/CA_interm_pub.key" > /dev/null 2>&1
-openssl req -in "$LOCAL_DIR/$temp_dir/pki/prefecture/CA_interm_priv.key" -out "$LOCAL_DIR/$temp_dir/pki/prefecture/CA_interm.csr" -passin pass:azerty -subj "/C=FR/ST=France/L=Paris/CN=prefecture" -new -nodes > /dev/null 2>&1
-openssl ca -config "$LOCAL_DIR/$temp_dir/pki/etat/ca-config.cnf" -extensions v3_intermediate_ca -cert "$LOCAL_DIR/$temp_dir/pki/etat/CA.crt" -keyfile "$LOCAL_DIR/$temp_dir/pki/etat/CA_priv.key" -in "$LOCAL_DIR/$temp_dir/pki/prefecture/CA_interm.csr" -out "$LOCAL_DIR/$temp_dir/pki/prefecture/CA_interm.crt" -passin pass:azerty -batch > /dev/null 2>&1
+openssl rsa -in "$LOCAL_DIR/$temp_dir/pki/prefecture/CA_interm_priv.key" -passin pass:azerty -pubout > "$LOCAL_DIR/$temp_dir/pki/prefecture/CA_interm_pub.key"
+openssl req -in "$LOCAL_DIR/$temp_dir/pki/prefecture/CA_interm_priv.key" -out "$LOCAL_DIR/$temp_dir/pki/prefecture/CA_interm.csr" -passin pass:azerty -subj "/C=FR/ST=France/L=Paris/CN=prefecture" -new -nodes
+openssl ca -config "$LOCAL_DIR/$temp_dir/pki/etat/ca-config.cnf" -extensions v3_intermediate_ca -cert "$LOCAL_DIR/$temp_dir/pki/etat/CA.crt" -keyfile "$LOCAL_DIR/$temp_dir/pki/etat/CA_priv.key" -in "$LOCAL_DIR/$temp_dir/pki/prefecture/CA_interm.csr" -out "$LOCAL_DIR/$temp_dir/pki/prefecture/CA_interm.crt" -passin pass:azerty -batch
 
 #Generation des cles des votants
 cd $LOCAL_DIR
@@ -41,4 +41,11 @@ while read line; do
     openssl rsa -in "$LOCAL_DIR/$temp_dir/pki/votants/${id}_priv.key" -passin pass:azerty -pubout > "$LOCAL_DIR/$temp_dir/pki/votants/${id}_pub.key"
 done < "$db_liste_electorale" > /dev/null 2>&1
 
-#Generation des demandes de certificat des votants
+#Generation et signature des demandes de certificat des votants
+cp "$LOCAL_DIR/$config_dir/ca-interm-config.cnf" "$LOCAL_DIR/$temp_dir/pki/prefecture/"
+cd "$LOCAL_DIR/$temp_dir/pki/prefecture/"
+while read line; do
+    id="$(echo $line | cut -f1 -d ';')"
+    openssl req -in "$LOCAL_DIR/$temp_dir/pki/votants/${id}_priv.key" -out "$LOCAL_DIR/$temp_dir/pki/votants/${id}.csr" -passin pass:azerty -subj "/C=FR/ST=France/L=Paris/CN=$id" -new -nodes > /dev/null 2>&1
+    openssl ca -config "$LOCAL_DIR/$temp_dir/pki/prefecture/ca-interm-config.cnf" -cert "$LOCAL_DIR/$temp_dir/pki/prefecture/CA_interm.crt" -keyfile "$LOCAL_DIR/$temp_dir/pki/prefecture/CA_interm_priv.key" -in "$LOCAL_DIR/$temp_dir/pki/votants/${id}.csr" -out "$LOCAL_DIR/$temp_dir/pki/votants/${id}.crt" -passin pass:azerty -batch
+done < "$LOCAL_DIR/$db_liste_electorale"
