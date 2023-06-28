@@ -50,7 +50,7 @@ id_vote=$(( RANDOM % 1000 + 1 ))
 message="${id_vote};${signature};${vote}"
 
 #### SEND TLS
-echo $message > "$db_liste_messages"
+echo $message >> "$db_liste_messages"
 
 # echo $signature | openssl base64 -d > signature.bin
 # echo $message | cut -d ';' -f 2 | openssl base64 -d | openssl dgst -sha256 -passin pass:azerty -verify temp/pki/votants/01_pub.key -signature signature.bin init.sh

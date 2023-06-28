@@ -8,11 +8,13 @@ echo "######### Dépouillement #########" >> $s_bureau_vote
 echo "Nettoyage de la liste des messages reçus" >> $s_bureau_vote
 while read line;do
     vote=$(echo $line | cut -d ';' -f 3)
-    echo $vote > $db_liste_votes
+    echo $vote >> $db_liste_votes
 done < $db_liste_messages
 
+
 echo "Mélange de la liste des votes" >> $s_bureau_vote
-sort -R $db_liste_votes | tee $db_liste_votes
+# sort -R $db_liste_votes
+sort -R $db_liste_votes > sorted.tmp && mv sorted.tmp $db_liste_votes
 
 
 ### Publication des clés des machines de vote
