@@ -15,34 +15,45 @@ mkdir -p "$LOCAL_DIR/$temp_dir/pki/etat" \
 "$LOCAL_DIR/$temp_dir/pki/votants" \
 "$LOCAL_DIR/$temp_dir/pki/machine"
 
-
 #Creation de l'autorite de certification (Etat)
-openssl genrsa -aes256 -out "$LOCAL_DIR/$temp_dir/pki/etat/CA_priv.key" -passout pass:azerty 4096
-openssl rsa -in "$LOCAL_DIR/$temp_dir/pki/etat/CA_priv.key" -passin pass:azerty -pubout > "$LOCAL_DIR/$temp_dir/pki/etat/CA_pub.key"
-openssl req -x509 -new -nodes -key "$LOCAL_DIR/$temp_dir/pki/etat/CA_priv.key" -sha256 -days 7300 -out "$LOCAL_DIR/$temp_dir/pki/etat/CA.crt" -passin pass:azerty -subj "/C=FR/ST=France/L=Paris/CN=etat"
+openssl req -x509 -days 7300 -newkey rsa:4096 -sha256 -out "$LOCAL_DIR/$temp_dir/pki/etat/CA.crt" -keyout "$LOCAL_DIR/$temp_dir/pki/etat/CA_priv.key" -subj "/C=FR/ST=France/L=Paris/CN=etat" -nodes > /dev/null 2>&1 
+openssl rsa -in "$LOCAL_DIR/$temp_dir/pki/etat/CA_priv.key" -pubout > "$LOCAL_DIR/$temp_dir/pki/etat/CA_pub.key" > /dev/null 2>&1
 cd "$LOCAL_DIR/$temp_dir/pki/etat/"
 echo 1000 > serial
 touch index.txt
 
 #On copie la config du CA
-cp "$LOCAL_DIR/$config_dir/ca-config.cnf" "$LOCAL_DIR/$temp_dir/pki/etat/"
+cp "$LOCAL_DIR/$config_dir/ca-config.cnf" .
 
 #Creation de l'autorite intermediaire (Prefecture)
-openssl genrsa -aes256 -out "$LOCAL_DIR/$temp_dir/pki/prefecture/CA_interm_priv.key" -passout pass:azerty 4096
-openssl rsa -in "$LOCAL_DIR/$temp_dir/pki/prefecture/CA_interm_priv.key" -passin pass:azerty -pubout > "$LOCAL_DIR/$temp_dir/pki/etat/CA_interm_pub.key"
-openssl req -in "$LOCAL_DIR/$temp_dir/pki/prefecture/CA_interm_priv.key" -out "$LOCAL_DIR/$temp_dir/pki/prefecture/CA_interm.csr" -passin pass:azerty -subj "/C=FR/ST=France/L=Paris/CN=prefecture" -new -nodes
-openssl ca -config "$LOCAL_DIR/$temp_dir/pki/etat/ca-config.cnf" -extensions v3_intermediate_ca -cert "$LOCAL_DIR/$temp_dir/pki/etat/CA.crt" -keyfile "$LOCAL_DIR/$temp_dir/pki/etat/CA_priv.key" -in "$LOCAL_DIR/$temp_dir/pki/prefecture/CA_interm.csr" -out "$LOCAL_DIR/$temp_dir/pki/prefecture/CA_interm.crt" -passin pass:azerty -batch
+openssl req -newkey rsa:4096 -sha256 -out "../prefecture/CA_interm.csr" -keyout "../prefecture/CA_interm_priv.key" -subj "/C=FR/ST=France/L=Paris/CN=prefecture" -nodes > /dev/null 2>&1
+openssl rsa -in "../prefecture/CA_interm_priv.key" -pubout > "../prefecture/CA_interm_pub.key" > /dev/null 2>&1
+openssl ca -config "ca-config.cnf" -extensions v3_intermediate_ca -cert "CA.crt" -keyfile "CA_priv.key" -in "../prefecture/CA_interm.csr" -out "../prefecture/CA_interm.crt" -batch > /dev/null 2>&1
+cd "$LOCAL_DIR/$temp_dir/pki/prefecture/"
+echo 1000 > serial
+touch index.txt
 
-#Generation des cles des votants
-cd $LOCAL_DIR
+#On copie la config du CA intermédiaire
+cp "$LOCAL_DIR/$config_dir/ca-interm-config.cnf" .
+
+#Génération et signature des clés de la machine
+openssl req -newkey rsa:2048 -sha256 -out "../machine/machine.csr" -keyout "../machine/machine_priv.key" -subj "/C=FR/ST=France/L=Paris/CN=machine" -nodes > /dev/null 2>&1
+openssl rsa -in "../machine/machine_priv.key" -pubout > "../machine/machine_pub.key" > /dev/null 2>&1
+openssl ca -config "ca-interm-config.cnf" -cert "CA_interm.crt" -keyfile "CA_interm_priv.key" -in "../machine/machine.csr" -out "../machine/machine.crt" -batch > /dev/null 2>&1
+
+#Génération et signature des clés du bureau de vote
+openssl req -newkey rsa:2048 -sha256 -out "../bureau/bureau.csr" -keyout "../bureau/bureau_priv.key" -subj "/C=FR/ST=France/L=Paris/CN=bureau" -nodes > /dev/null 2>&1
+openssl rsa -in "../bureau/bureau_priv.key" -pubout > "../bureau/bureau_pub.key" > /dev/null 2>&1
+openssl ca -config "ca-interm-config.cnf" -cert "CA_interm.crt" -keyfile "CA_interm_priv.key" -in "../bureau/bureau.csr" -out "../bureau/bureau.crt" -batch > /dev/null 2>&1
+
+#Generation et signature des clés des votants
 while read line; do
     id="$(echo $line | cut -f1 -d ';')"
-    openssl genrsa -aes256 -out "$LOCAL_DIR/$temp_dir/pki/votants/${id}_priv.key" -passout pass:azerty 2048
-    openssl rsa -in "$LOCAL_DIR/$temp_dir/pki/votants/${id}_priv.key" -passin pass:azerty -pubout > "$LOCAL_DIR/$temp_dir/pki/votants/${id}_pub.key"
-done < "$db_liste_electorale"
-
-#Generation des demandes de certificat des votants
-
+    openssl req -newkey rsa:2048 -sha256 -out "../votants/${id}.csr" -keyout "../votants/${id}_priv.key" -subj "/C=FR/ST=France/L=Paris/CN=$id" -nodes > /dev/null 2>&1
+    openssl rsa -in "../votants/${id}_priv.key" -pubout > "../votants/${id}_pub.key" > /dev/null 2>&1
+    openssl ca -config "ca-interm-config.cnf" -cert "CA_interm.crt" -keyfile "CA_interm_priv.key" -in "../votants/${id}.csr" -out "../votants/${id}.crt" -batch > /dev/null 2>&1
+done < "$LOCAL_DIR/$db_liste_electorale"
+cd "$LOCAL_DIR"
 
 # Restoration clé aes
 echo "1f7afe098b8a918a7124ed01444d33c2dfd7941ae8c32a4ca8280862dd94be1a" > temp/pki/bureau/aes_key.pem
