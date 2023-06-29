@@ -41,7 +41,7 @@ echo -e "\n${cBlue}Nettoyage${nc} des fichiers de logs et du répertoire tempora
 truncate --size 0 "$LOCAL_DIR/"{"$s_prefecture","$s_bureau_vote","$s_machine_vote","$db_liste_votes"}
 rm -rf "$LOCAL_DIR/$temp_dir/*"
 
-echo -e "\n${cCyan}${aBold}Affectation${nc} de l'utilisateur 🪪"
+echo -e "\n${cCyan}${aBold}Affectation${nc} de l'utilisateur à la machine 🪪"
 source "$LOCAL_DIR/affectation.sh"
 
 # echo -e "\n${cCyan}${aBold}Connexion${nc} de l'utilisateur 🔒"
