@@ -27,6 +27,8 @@ db_liste_votes="$data_dir/liste_votes.dat"
 db_liste_signatures="$data_dir/liste_signatures.dat"
 
 temp_dir="temp"
+temp_pki="$temp_dir/pki"
+temp_connexion="$temp_dir/connexion"
 
 config_dir="config"
 

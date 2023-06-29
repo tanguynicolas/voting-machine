@@ -37,11 +37,29 @@ echo -e "La signature de votre vote est : \n$signature"
 echo "------> Envoi du message" >> "$LOCAL_DIR"/"$s_machine_vote"
 echo "Génération d'un identifiant pour le message" >> "$LOCAL_DIR"/"$s_machine_vote"
 
+
 id_vote=$(( RANDOM % 1000 + 1 ))
 message="${id_vote};${signature};${vote}"
 
-#### TLS ####
-echo $message >> "$LOCAL_DIR"/"$db_liste_messages"
-#### FIN TLS ####
 
 echo "Message envoyé au serveur du bureau de vote à l'aide de TLS" >> $LOCAL_DIR/$s_machine_vote
+
+# Chiffrement
+echo -n "$message" > "$LOCAL_DIR/$temp_connexion/message"
+#echo -n "04$message" > "$LOCAL_DIR/$temp_connexion/seq+message"
+#openssl sha256 -hmac "$(cat "$LOCAL_DIR/$temp_connexion/client-mackey.dat")" \
+#    "$LOCAL_DIR/$temp_connexion/seq+message" > "$LOCAL_DIR/$temp_connexion/HMAC_seq+message"
+#
+#echo -n "$(cat "$LOCAL_DIR/$temp_connexion/message")$(cat "$LOCAL_DIR/$temp_connexion/HMAC_seq+message")" \
+#    | openssl aes-256-cbc -nosalt -iv "$(cat "$LOCAL_DIR/$temp_connexion/client-iv.dat")" \
+#    -K "$(cat "$LOCAL_DIR/$temp_connexion/client-key.dat")" > "$LOCAL_DIR/$temp_connexion/message-chif"
+
+# Envoi
+echo $message >> "$LOCAL_DIR"/"$db_liste_messages"
+
+# Déchiffrement
+#echo -n "$(cat "$LOCAL_DIR/$temp_connexion/message-chif")" | openssl aes-256-cbc -d -nosalt \
+#    -iv "$(cat "$LOCAL_DIR/$temp_connexion/client-iv.dat")" -K "$(cat "$LOCAL_DIR/$temp_connexion/client-key.dat")" \
+#    > "$LOCAL_DIR/$temp_connexion/message-dec"
+
+echo "Message envoyé au serveur du bureau de vote à l'aide de TLS" >> $s_machine_vote
