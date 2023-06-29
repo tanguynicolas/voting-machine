@@ -24,6 +24,7 @@ db_liste_candidats="$data_dir/liste_candidats.dat"
 db_liste_cle_publique_votant="$data_dir/liste_cle_publique_votant.dat"
 db_liste_messages="$data_dir/liste_messages.dat"
 db_liste_votes="$data_dir/liste_votes.dat"
+db_liste_signatures="$data_dir/liste_signatures.dat"
 
 temp_dir="temp"
 temp_pki="$temp_dir/pki"
