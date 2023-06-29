@@ -25,7 +25,6 @@ echo "Chiffrement du vote avec un sel et la clé publique du bureau de vote" >> 
 sel=$(openssl rand -base64 10)
 vote_base="${choix};${sel}"
 vote=$(echo "$vote_base" | openssl enc -aes-256-cbc -pass file:temp/pki/machine/aes_key.txt 2> /dev/null | openssl base64 -e)
-# echo "$vote" | openssl base64 -d | openssl enc -aes-256-cbc -d -pass file:temp/pki/machine/aes_key.txt 2> /dev/null
 
 ### Signature
 echo "------> Signature" >> "$s_machine_vote"
@@ -44,11 +43,5 @@ message="${id_vote};${signature};${vote}"
 #### TLS ####
 echo $message >> "$db_liste_messages"
 #### FIN TLS ####
-
-
-
-# echo $signature | openssl base64 -d > signature.bin
-# echo $message | cut -d ';' -f 2 | openssl base64 -d | openssl dgst -sha256 -passin pass:azerty -verify temp/pki/votants/01_pub.key -signature signature.bin init.sh
-# echo $message | cut -d ';' -f 3 | openssl base64 -d | openssl enc -aes-256-cbc -d -pass file:temp/pki/machine/aes_key.txt 2> /dev/null
 
 echo "Message envoyé au serveur du bureau de vote à l'aide de TLS" >> $s_machine_vote
