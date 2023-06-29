@@ -56,5 +56,5 @@ done < "$LOCAL_DIR/$db_liste_electorale"
 cd "$LOCAL_DIR"
 
 # Restoration clé aes
-echo "1f7afe098b8a918a7124ed01444d33c2dfd7941ae8c32a4ca8280862dd94be1a" > temp/pki/bureau/aes_key.pem
-echo "1f7afe098b8a918a7124ed01444d33c2dfd7941ae8c32a4ca8280862dd94be1a" > temp/pki/bureau/aes_key.pem
+echo "1f7afe098b8a918a7124ed01444d33c2dfd7941ae8c32a4ca8280862dd94be1a" > temp/pki/machine/aes_key.txt
+echo "1f7afe098b8a918a7124ed01444d33c2dfd7941ae8c32a4ca8280862dd94be1a" > temp/pki/bureau/aes_key.txt
