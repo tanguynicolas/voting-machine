@@ -24,23 +24,24 @@ echo 1000 > serial
 touch index.txt
 
 #On copie la config du CA
-cp "$LOCAL_DIR/$config_dir/ca-config.cnf" "$LOCAL_DIR/$temp_dir/pki/etat/"
+cp "$LOCAL_DIR/$config_dir/ca-config.cnf" .
 
 #Creation de l'autorite intermediaire (Prefecture)
-openssl req -newkey rsa:4096 -sha256 -out "$LOCAL_DIR/$temp_dir/pki/prefecture/CA_interm.csr" -keyout "$LOCAL_DIR/$temp_dir/pki/prefecture/CA_interm_priv.key" -subj "/C=FR/ST=France/L=Paris/CN=prefecture" -nodes 
-openssl rsa -in "$LOCAL_DIR/$temp_dir/pki/prefecture/CA_interm_priv.key" -pubout > "$LOCAL_DIR/$temp_dir/pki/prefecture/CA_interm_pub.key"
-openssl ca -config "$LOCAL_DIR/$temp_dir/pki/etat/ca-config.cnf" -extensions v3_intermediate_ca -cert "$LOCAL_DIR/$temp_dir/pki/etat/CA.crt" -keyfile "$LOCAL_DIR/$temp_dir/pki/etat/CA_priv.key" -in "$LOCAL_DIR/$temp_dir/pki/prefecture/CA_interm.csr" -out "$LOCAL_DIR/$temp_dir/pki/prefecture/CA_interm.crt" -batch
+openssl req -newkey rsa:4096 -sha256 -out "../prefecture/CA_interm.csr" -keyout "../prefecture/CA_interm_priv.key" -subj "/C=FR/ST=France/L=Paris/CN=prefecture" -nodes 
+openssl rsa -in "../prefecture/CA_interm_priv.key" -pubout > "../prefecture/CA_interm_pub.key"
+openssl ca -config "ca-config.cnf" -extensions v3_intermediate_ca -cert "CA.crt" -keyfile "CA_priv.key" -in "../prefecture/CA_interm.csr" -out "../prefecture/CA_interm.crt" -batch
 cd "$LOCAL_DIR/$temp_dir/pki/prefecture/"
 echo 1000 > serial
 touch index.txt
 
 #On copie la config du CA intermédiaire
-cp "$LOCAL_DIR/$config_dir/ca-interm-config.cnf" "$LOCAL_DIR/$temp_dir/pki/prefecture/"
+cp "$LOCAL_DIR/$config_dir/ca-interm-config.cnf" .
 
 #Generation et signature des clés des votants
 while read line; do
     id="$(echo $line | cut -f1 -d ';')"
-    openssl req -newkey rsa:2048 -sha256 -out "$LOCAL_DIR/$temp_dir/pki/votants/${id}.csr" -keyout "$LOCAL_DIR/$temp_dir/pki/votants/${id}_priv.key" -subj "/C=FR/ST=France/L=Paris/CN=$id" -nodes
-    openssl rsa -in "$LOCAL_DIR/$temp_dir/pki/votants/${id}_priv.key" -pubout > "$LOCAL_DIR/$temp_dir/pki/votants/${id}_pub.key"
-    openssl ca -config "$LOCAL_DIR/$temp_dir/pki/prefecture/ca-interm-config.cnf" -cert "$LOCAL_DIR/$temp_dir/pki/prefecture/CA_interm.crt" -keyfile "$LOCAL_DIR/$temp_dir/pki/prefecture/CA_interm_priv.key" -in "$LOCAL_DIR/$temp_dir/pki/votants/${id}.csr" -out "$LOCAL_DIR/$temp_dir/pki/votants/${id}.crt" -batch
+    openssl req -newkey rsa:2048 -sha256 -out "../votants/${id}.csr" -keyout "../votants/${id}_priv.key" -subj "/C=FR/ST=France/L=Paris/CN=$id" -nodes
+    openssl rsa -in "../votants/${id}_priv.key" -pubout > "../votants/${id}_pub.key"
+    openssl ca -config "ca-interm-config.cnf" -cert "CA_interm.crt" -keyfile "CA_interm_priv.key" -in "../votants/${id}.csr" -out "../votants/${id}.crt" -batch
 done < "$LOCAL_DIR/$db_liste_electorale"
+cd "$LOCAL_DIR"
