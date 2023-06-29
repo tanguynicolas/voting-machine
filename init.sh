@@ -8,7 +8,7 @@ source "$LOCAL_DIR/constants.sh"
 #les votants
 #machine de vote
 #serveur bv et prefec
-# certificats : prefec, racine, bureau, machine, 
+# certificats : prefec, racine, bureau, machine,
 mkdir -p "$LOCAL_DIR/$temp_dir/pki/etat" \
 "$LOCAL_DIR/$temp_dir/pki/prefecture" \
 "$LOCAL_DIR/$temp_dir/pki/bureau" \
@@ -42,3 +42,8 @@ while read line; do
 done < "$db_liste_electorale"
 
 #Generation des demandes de certificat des votants
+
+
+# Restoration clé aes
+echo "1f7afe098b8a918a7124ed01444d33c2dfd7941ae8c32a4ca8280862dd94be1a" > temp/pki/bureau/aes_key.pem
+echo "1f7afe098b8a918a7124ed01444d33c2dfd7941ae8c32a4ca8280862dd94be1a" > temp/pki/bureau/aes_key.pem
