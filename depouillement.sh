@@ -50,3 +50,8 @@ echo "Marie Le stylo : $cpt_Marie_Le_stylo"
 echo "Jean Roblochon : $cpt_Jean_Roblochon"
 echo "Filipe Boubou : $cpt_Filipe_Boubou"
 
+echo -e "\nPublication de la liste des signatures"
+while read line;do
+    vote=$(echo $line | cut -d ';' -f 2)
+    echo $vote >> $db_liste_signatures
+done < $db_liste_messages
