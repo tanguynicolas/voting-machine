@@ -16,32 +16,32 @@ read -rp "Choix : " choix
 
 echo -e " ${aBlink}>${nBlink} ${cYellow} A voter ! ${nc}"
 
-echo "######### Nouveau vote #########" >> "$s_machine_vote"
+echo "######### Nouveau vote #########" >> $LOCAL_DIR/$s_machine_vote
 
 ### Chiffrement du vote
-echo "------> Chiffrement du vote" >> "$s_machine_vote"
+echo "------> Chiffrement du vote" >> $LOCAL_DIR/$s_machine_vote
 
-echo "Chiffrement du vote avec un sel et la clé publique du bureau de vote" >> "$s_machine_vote"
+echo "Chiffrement du vote avec un sel et la clé publique du bureau de vote" >> "$LOCAL_DIR"/"$s_machine_vote"
 sel=$(openssl rand -base64 10)
 vote_base="${choix};${sel}"
-vote=$(echo "$vote_base" | openssl enc -aes-256-cbc -pass file:temp/pki/machine/aes_key.txt 2> /dev/null | openssl base64 -e)
+vote=$(echo "$vote_base" | openssl enc -aes-256-cbc -pass file:$LOCAL_DIR/$temp_dir/pki/machine/aes_key.txt 2> /dev/null | openssl base64 -e)
 
 ### Signature
-echo "------> Signature" >> "$s_machine_vote"
-signature=$(echo "$vote_base" | openssl dgst -sha256 -passin pass:azerty -sign temp/pki/votants/01_priv.key | openssl base64 -e)
-echo "Generation de la signature de cercle en utilisant les clés publique des autres membres" >> "$s_machine_vote"
-echo "Envoie de cette signature à la carte a puce pour signer avec la clé priver du votant" >> "$s_machine_vote"
+echo "------> Signature" >> "$LOCAL_DIR"/"$s_machine_vote"
+signature=$(echo "$vote_base" | openssl dgst -sha256 -passin pass:azerty -sign $LOCAL_DIR/$temp_dir/pki/votants/01_priv.key | openssl base64 -e)
+echo "Generation de la signature de cercle en utilisant les clés publique des autres membres" >> "$LOCAL_DIR"/"$s_machine_vote"
+echo "Envoie de cette signature à la carte a puce pour signer avec la clé priver du votant" >> "$LOCAL_DIR"/"$s_machine_vote"
 echo -e "La signature de votre vote est : \n$signature"
 
 ### Envoi du message
-echo "------> Envoi du message" >> "$s_machine_vote"
-echo "Génération d'un identifiant pour le message" >> "$s_machine_vote"
+echo "------> Envoi du message" >> "$LOCAL_DIR"/"$s_machine_vote"
+echo "Génération d'un identifiant pour le message" >> "$LOCAL_DIR"/"$s_machine_vote"
 
 id_vote=$(( RANDOM % 1000 + 1 ))
 message="${id_vote};${signature};${vote}"
 
 #### TLS ####
-echo $message >> "$db_liste_messages"
+echo $message >> "$LOCAL_DIR"/"$db_liste_messages"
 #### FIN TLS ####
 
-echo "Message envoyé au serveur du bureau de vote à l'aide de TLS" >> $s_machine_vote
+echo "Message envoyé au serveur du bureau de vote à l'aide de TLS" >> $LOCAL_DIR/$s_machine_vote
