@@ -37,6 +37,11 @@ touch index.txt
 #On copie la config du CA intermédiaire
 cp "$LOCAL_DIR/$config_dir/ca-interm-config.cnf" .
 
+#Génération et signature des clés de la machine
+openssl req -newkey rsa:2048 -sha256 -out "../machine/machine.csr" -keyout "../machine/machine_priv.key" -subj "/C=FR/ST=France/L=Paris/CN=machine" -nodes > /dev/null 2>&1
+openssl rsa -in "../machine/machine_priv.key" -pubout > "../machine/machine_pub.key" > /dev/null 2>&1
+openssl ca -config "ca-interm-config.cnf" -cert "CA_interm.crt" -keyfile "CA_interm_priv.key" -in "../machine/machine.csr" -out "../machine/machine.crt" -batch > /dev/null 2>&1
+
 #Generation et signature des clés des votants
 while read line; do
     id="$(echo $line | cut -f1 -d ';')"
