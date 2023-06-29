@@ -26,6 +26,7 @@ echo "Chaque machine de vote envoie sa clé secrète au bureau de vote en utilis
 cpt_Manuel_Macaron=0
 cpt_Marie_Le_stylo=0
 cpt_Jean_Roblochon=0
+cpt_Filipe_Boubou=0
 
 echo "Le bureau de vote déchiffre et comptabilise les votes" >> $s_bureau_vote
 while read line;do
@@ -37,6 +38,8 @@ while read line;do
         ((cpt_Marie_Le_stylo=cpt_Marie_Le_stylo+1))
     elif [ "$vote" == "03" ];then
         ((cpt_Jean_Roblochon=cpt_Jean_Roblochon+1))
+    elif [ "$vote" == "04" ];then
+        ((cpt_Filipe_Boubou=cpt_Filipe_Boubou+1))
     fi
 
 done < $db_liste_votes

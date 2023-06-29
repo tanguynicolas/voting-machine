@@ -39,7 +39,7 @@ echo "------> Chiffrement du vote" >> "$s_machine_vote"
 echo "Chiffrement du vote avec un sel et la clé publique du bureau de vote" >> "$s_machine_vote"
 sel=$(openssl rand -base64 10)
 vote="${choix};${sel}"
-vote=$(echo "$vote" | openssl enc -aes-256-cbc -salt -pass file:temp/pki/machine/aes_key.txt 2> /dev/null | openssl base64 -e)
+vote=$(echo "$vote" | openssl enc -aes-256-cbc -pass file:temp/pki/machine/aes_key.txt 2> /dev/null | openssl base64 -e)
 # echo "$vote" | openssl base64 -d | openssl enc -aes-256-cbc -d -pass file:temp/pki/machine/aes_key.txt 2> /dev/null
 
 ### Envoi du message
