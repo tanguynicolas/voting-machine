@@ -48,4 +48,5 @@ echo "Publication des résultats"
 echo "Manuel Macaron : $cpt_Manuel_Macaron"
 echo "Marie Le stylo : $cpt_Marie_Le_stylo"
 echo "Jean Roblochon : $cpt_Jean_Roblochon"
+echo "Filipe Boubou : $cpt_Filipe_Boubou"
 
