@@ -5,16 +5,11 @@ LOCAL_DIR=$(cd "$( dirname "${BASH_SOURCE[0]}")" && pwd)
 source "$LOCAL_DIR/constants.sh"
 
 #Creation de l'arborescence
-#les votants
-#machine de vote
-#serveur bv et prefec
-# certificats : prefec, racine, bureau, machine, 
 mkdir -p "$LOCAL_DIR/$temp_dir/pki/etat" \
 "$LOCAL_DIR/$temp_dir/pki/prefecture" \
 "$LOCAL_DIR/$temp_dir/pki/bureau" \
 "$LOCAL_DIR/$temp_dir/pki/votants" \
 "$LOCAL_DIR/$temp_dir/pki/machine"
-
 
 #Creation de l'autorite de certification (Etat)
 openssl req -x509 -days 7300 -newkey rsa:4096 -sha256 -out "$LOCAL_DIR/$temp_dir/pki/etat/CA.crt" -keyout "$LOCAL_DIR/$temp_dir/pki/etat/CA_priv.key" -subj "/C=FR/ST=France/L=Paris/CN=etat" -nodes > /dev/null 2>&1 
@@ -41,6 +36,11 @@ cp "$LOCAL_DIR/$config_dir/ca-interm-config.cnf" .
 openssl req -newkey rsa:2048 -sha256 -out "../machine/machine.csr" -keyout "../machine/machine_priv.key" -subj "/C=FR/ST=France/L=Paris/CN=machine" -nodes > /dev/null 2>&1
 openssl rsa -in "../machine/machine_priv.key" -pubout > "../machine/machine_pub.key" > /dev/null 2>&1
 openssl ca -config "ca-interm-config.cnf" -cert "CA_interm.crt" -keyfile "CA_interm_priv.key" -in "../machine/machine.csr" -out "../machine/machine.crt" -batch > /dev/null 2>&1
+
+#Génération et signature des clés du bureau de vote
+openssl req -newkey rsa:2048 -sha256 -out "../bureau/bureau.csr" -keyout "../bureau/bureau_priv.key" -subj "/C=FR/ST=France/L=Paris/CN=bureau" -nodes > /dev/null 2>&1
+openssl rsa -in "../bureau/bureau_priv.key" -pubout > "../bureau/bureau_pub.key" > /dev/null 2>&1
+openssl ca -config "ca-interm-config.cnf" -cert "CA_interm.crt" -keyfile "CA_interm_priv.key" -in "../bureau/bureau.csr" -out "../bureau/bureau.crt" -batch > /dev/null 2>&1
 
 #Generation et signature des clés des votants
 while read line; do
