@@ -15,7 +15,7 @@ echo
 read -rp "Choix : " choix
 
 if grep -E "^${choix};.*$" "$LOCAL_DIR/$db_liste_candidats" >/dev/null; then
-    echo -e " ${aBlink}>${nBlink} ${cYellow} A voter ! ${nc}"
+    echo -e " ${aBlink}>${nBlink} ${cYellow} A voté ! ${nc}"
 else
     echo -e " ${aBlink}>${nBlink} ${choix} ${cYellow}pas présent${nc} sur la liste des candidats."
     exit 0
