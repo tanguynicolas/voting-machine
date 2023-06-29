@@ -54,21 +54,21 @@ message="${id_vote};${signature};${vote}"
 #### SEND TLS
 # Chiffrement
 echo -n "$message" > "$LOCAL_DIR/$temp_connexion/message"
-echo -n "04$message" > "$LOCAL_DIR/$temp_connexion/seq+message"
-openssl sha256 -hmac "$(cat "$LOCAL_DIR/$temp_connexion/client-mackey.dat")" \
-    "$LOCAL_DIR/$temp_connexion/seq+message" > "$LOCAL_DIR/$temp_connexion/HMAC_seq+message"
-
-echo -n "$(cat "$LOCAL_DIR/$temp_connexion/message")$(cat "$LOCAL_DIR/$temp_connexion/HMAC_seq+message")" \
-    | openssl aes-256-cbc -nosalt -iv "$(cat "$LOCAL_DIR/$temp_connexion/client-iv.dat")" \
-    -K "$(cat "$LOCAL_DIR/$temp_connexion/client-key.dat")" > "$LOCAL_DIR/$temp_connexion/message-chif"
+#echo -n "04$message" > "$LOCAL_DIR/$temp_connexion/seq+message"
+#openssl sha256 -hmac "$(cat "$LOCAL_DIR/$temp_connexion/client-mackey.dat")" \
+#    "$LOCAL_DIR/$temp_connexion/seq+message" > "$LOCAL_DIR/$temp_connexion/HMAC_seq+message"
+#
+#echo -n "$(cat "$LOCAL_DIR/$temp_connexion/message")$(cat "$LOCAL_DIR/$temp_connexion/HMAC_seq+message")" \
+#    | openssl aes-256-cbc -nosalt -iv "$(cat "$LOCAL_DIR/$temp_connexion/client-iv.dat")" \
+#    -K "$(cat "$LOCAL_DIR/$temp_connexion/client-key.dat")" > "$LOCAL_DIR/$temp_connexion/message-chif"
 
 # Envoi
-cat "$LOCAL_DIR/$temp_connexion/message-chif" >> "$LOCAL_DIR/$db_liste_messages"
+echo $message >> "$LOCAL_DIR"/"$db_liste_messages"
 
 # Déchiffrement
-echo -n "$(cat "$LOCAL_DIR/$temp_connexion/message-chif")" | openssl aes-256-cbc -d -nosalt \
-    -iv "$(cat "$LOCAL_DIR/$temp_connexion/client-iv.dat")" -K "$(cat "$LOCAL_DIR/$temp_connexion/client-key.dat")" \
-    > "$LOCAL_DIR/$temp_connexion/message-dec"
+#echo -n "$(cat "$LOCAL_DIR/$temp_connexion/message-chif")" | openssl aes-256-cbc -d -nosalt \
+#    -iv "$(cat "$LOCAL_DIR/$temp_connexion/client-iv.dat")" -K "$(cat "$LOCAL_DIR/$temp_connexion/client-key.dat")" \
+#    > "$LOCAL_DIR/$temp_connexion/message-dec"
 
 # echo $signature | openssl base64 -d > signature.bin
 # echo $message | cut -d ';' -f 2 | openssl base64 -d | openssl dgst -sha256 -passin pass:azerty -verify temp/pki/votants/01_pub.key -signature signature.bin init.sh
