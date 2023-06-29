@@ -20,8 +20,14 @@ nBlink='\e[25m'
 
 data_dir="data"
 db_liste_electorale="$data_dir/liste_electorale.dat"
+db_liste_candidats="$data_dir/liste_candidats.dat"
+db_liste_cle_publique_votant="$data_dir/liste_cle_publique_votant.dat"
+db_liste_messages="$data_dir/liste_messages.dat"
+db_liste_votes="$data_dir/liste_votes.dat"
 
 temp_dir="temp"
+
+config_dir="config"
 
 logs_dir="logs"
 s_prefecture="$logs_dir/prefecture.log"
