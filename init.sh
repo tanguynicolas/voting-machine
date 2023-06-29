@@ -17,8 +17,8 @@ mkdir -p "$LOCAL_DIR/$temp_dir/pki/etat" \
 
 
 #Creation de l'autorite de certification (Etat)
-openssl req -x509 -days 7300 -newkey rsa:4096 -sha256 -out "$LOCAL_DIR/$temp_dir/pki/etat/CA.crt" -keyout "$LOCAL_DIR/$temp_dir/pki/etat/CA_priv.key" -subj "/C=FR/ST=France/L=Paris/CN=etat" -nodes 
-openssl rsa -in "$LOCAL_DIR/$temp_dir/pki/etat/CA_priv.key" -pubout > "$LOCAL_DIR/$temp_dir/pki/etat/CA_pub.key" 
+openssl req -x509 -days 7300 -newkey rsa:4096 -sha256 -out "$LOCAL_DIR/$temp_dir/pki/etat/CA.crt" -keyout "$LOCAL_DIR/$temp_dir/pki/etat/CA_priv.key" -subj "/C=FR/ST=France/L=Paris/CN=etat" -nodes > /dev/null 2>&1 
+openssl rsa -in "$LOCAL_DIR/$temp_dir/pki/etat/CA_priv.key" -pubout > "$LOCAL_DIR/$temp_dir/pki/etat/CA_pub.key" > /dev/null 2>&1
 cd "$LOCAL_DIR/$temp_dir/pki/etat/"
 echo 1000 > serial
 touch index.txt
@@ -27,9 +27,9 @@ touch index.txt
 cp "$LOCAL_DIR/$config_dir/ca-config.cnf" .
 
 #Creation de l'autorite intermediaire (Prefecture)
-openssl req -newkey rsa:4096 -sha256 -out "../prefecture/CA_interm.csr" -keyout "../prefecture/CA_interm_priv.key" -subj "/C=FR/ST=France/L=Paris/CN=prefecture" -nodes 
-openssl rsa -in "../prefecture/CA_interm_priv.key" -pubout > "../prefecture/CA_interm_pub.key"
-openssl ca -config "ca-config.cnf" -extensions v3_intermediate_ca -cert "CA.crt" -keyfile "CA_priv.key" -in "../prefecture/CA_interm.csr" -out "../prefecture/CA_interm.crt" -batch
+openssl req -newkey rsa:4096 -sha256 -out "../prefecture/CA_interm.csr" -keyout "../prefecture/CA_interm_priv.key" -subj "/C=FR/ST=France/L=Paris/CN=prefecture" -nodes > /dev/null 2>&1
+openssl rsa -in "../prefecture/CA_interm_priv.key" -pubout > "../prefecture/CA_interm_pub.key" > /dev/null 2>&1
+openssl ca -config "ca-config.cnf" -extensions v3_intermediate_ca -cert "CA.crt" -keyfile "CA_priv.key" -in "../prefecture/CA_interm.csr" -out "../prefecture/CA_interm.crt" -batch > /dev/null 2>&1
 cd "$LOCAL_DIR/$temp_dir/pki/prefecture/"
 echo 1000 > serial
 touch index.txt
@@ -40,8 +40,8 @@ cp "$LOCAL_DIR/$config_dir/ca-interm-config.cnf" .
 #Generation et signature des clés des votants
 while read line; do
     id="$(echo $line | cut -f1 -d ';')"
-    openssl req -newkey rsa:2048 -sha256 -out "../votants/${id}.csr" -keyout "../votants/${id}_priv.key" -subj "/C=FR/ST=France/L=Paris/CN=$id" -nodes
-    openssl rsa -in "../votants/${id}_priv.key" -pubout > "../votants/${id}_pub.key"
-    openssl ca -config "ca-interm-config.cnf" -cert "CA_interm.crt" -keyfile "CA_interm_priv.key" -in "../votants/${id}.csr" -out "../votants/${id}.crt" -batch
+    openssl req -newkey rsa:2048 -sha256 -out "../votants/${id}.csr" -keyout "../votants/${id}_priv.key" -subj "/C=FR/ST=France/L=Paris/CN=$id" -nodes > /dev/null 2>&1
+    openssl rsa -in "../votants/${id}_priv.key" -pubout > "../votants/${id}_pub.key" > /dev/null 2>&1
+    openssl ca -config "ca-interm-config.cnf" -cert "CA_interm.crt" -keyfile "CA_interm_priv.key" -in "../votants/${id}.csr" -out "../votants/${id}.crt" -batch > /dev/null 2>&1
 done < "$LOCAL_DIR/$db_liste_electorale"
 cd "$LOCAL_DIR"
