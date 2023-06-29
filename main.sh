@@ -39,7 +39,7 @@ done
 
 echo -e "\n${cOrange}Nettoyage${nc} des fichiers de logs et du répertoire temporaire 🧹"
 truncate --size 0 "$LOCAL_DIR/"{"$s_prefecture","$s_bureau_vote","$s_machine_vote","$db_liste_votes"}
-rm -rf $LOCAL_DIR/$temp_dir/*
+rm -rf "$LOCAL_DIR"/"$temp_dir"/*
 
 echo -e "\n${cBlue}Initialisation${nc} des prérequis cryptographiques, veuillez patienter..."
 source "$LOCAL_DIR/init.sh"
@@ -47,11 +47,11 @@ source "$LOCAL_DIR/init.sh"
 echo -e "\n${cCyan}${aBold}Affectation${nc} de l'utilisateur à la machine 🪪"
 source "$LOCAL_DIR/affectation.sh"
 
-# echo -e "\n${cCyan}${aBold}Connexion${nc} de l'utilisateur 🔒"
-# source "$LOCAL_DIR/connexion.sh"
+echo -e "\n${cCyan}${aBold}Connexion${nc} de l'utilisateur 🔒"
+source "$LOCAL_DIR/connexion.sh"
 
-# echo -e "\n${cCyan}${aBold}Vote${nc} de l'utilisateur 🗳️"
-# source "$LOCAL_DIR/vote.sh"
+echo -e "\n${cCyan}${aBold}Vote${nc} de l'utilisateur 🗳️"
+source "$LOCAL_DIR/vote.sh"
 
 echo -e "\n${cCyan}${aBold}Dépouillement${nc} du scrutin 📺"
 source "$LOCAL_DIR/depouillement.sh"
