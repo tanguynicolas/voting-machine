@@ -26,6 +26,8 @@ db_liste_messages="$data_dir/liste_messages.dat"
 db_liste_votes="$data_dir/liste_votes.dat"
 
 temp_dir="temp"
+temp_pki="$temp_dir/pki"
+temp_connexion="$temp_dir/connexion"
 
 config_dir="config"
 

@@ -1,0 +1,20 @@
+
+Début du handshake TLS
+01 Client : Hello - voici mes algorithmes AES256, RSA4096, DSA, SHA256.
+07 Client : certificat - tiens mon certificat « /home/tn/Desktop/Cryptographie/voting-machine/temp/pki/votants/id.crt ».
+08 Vérification du certificat du client.
+09 Certificat valide.
+13 Client : Key Exchange - PMS chiffré reçu, déchiffrement avec clé privée.
+14 Dérivation du PMS.
+15 Client : CCS - je passe en mode chiffré.
+17 Client : End Handshake - 4A4Ubka2ncZokKSCyAuBnBSWlIbGWZQHz5Ds+LmmqtNWD
+18 Déchiffrement du message et vérification de l'intégrité des échanges précédents.
+20 HMac des communications précédentes
+######### Nouveau vote #########
+------> Signature
+Generation de la signature de cercle en utilisant les clés publique des autres membres
+Envoie de cette signature à la carte a puce pour signer avec la clé priver du votant
+------> Chiffrement du vote
+Chiffrement du vote avec un sel et la clé publique du bureau de vote
+------> Envoi du message
+Génération d'un identifiant pour le message

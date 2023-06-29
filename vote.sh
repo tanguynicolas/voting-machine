@@ -22,35 +22,53 @@ else
 fi
 
 
-echo "######### Nouveau vote #########" >> "$s_machine_vote"
+echo "######### Nouveau vote #########" >> "$LOCAL_DIR/$s_machine_vote"
 
 
 ### Signature
-echo "------> Signature" >> "$s_machine_vote"
+echo "------> Signature" >> "$LOCAL_DIR/$s_machine_vote"
 
-signature=$(openssl dgst -sha256 -passin pass:azerty -sign temp/pki/votants/01_priv.key init.sh  | openssl base64 -e)
-echo "Generation de la signature de cercle en utilisant les clés publique des autres membres" >> "$s_machine_vote"
-echo "Envoie de cette signature à la carte a puce pour signer avec la clé priver du votant" >> "$s_machine_vote"
+signature=$(openssl dgst -sha256 -passin pass:azerty -sign $LOCAL_DIR/$temp_pki/votants/01_priv.key $LOCAL_DIR/init.sh | openssl base64 -e)
+echo "Generation de la signature de cercle en utilisant les clés publique des autres membres" >> "$LOCAL_DIR/$s_machine_vote"
+echo "Envoie de cette signature à la carte a puce pour signer avec la clé priver du votant" >> "$LOCAL_DIR/$s_machine_vote"
 echo -e "La signature de votre vote est : \n$signature"
 
 ### Chiffrement du vote
-echo "------> Chiffrement du vote" >> "$s_machine_vote"
+echo "------> Chiffrement du vote" >> "$LOCAL_DIR/$s_machine_vote"
 
-echo "Chiffrement du vote avec un sel et la clé publique du bureau de vote" >> "$s_machine_vote"
+echo "Chiffrement du vote avec un sel et la clé publique du bureau de vote" >> "$LOCAL_DIR/$s_machine_vote"
 sel=$(openssl rand -base64 10)
 vote="${choix};${sel}"
-vote=$(echo "$vote" | openssl enc -aes-256-cbc -pass file:temp/pki/machine/aes_key.txt 2> /dev/null | openssl base64 -e)
+vote=$(echo "$vote" | openssl enc -aes-256-cbc -pass file:$LOCAL_DIR/$temp_pki/machine/aes_key.txt 2> /dev/null | openssl base64 -e)
 # echo "$vote" | openssl base64 -d | openssl enc -aes-256-cbc -d -pass file:temp/pki/machine/aes_key.txt 2> /dev/null
 
 ### Envoi du message
-echo "------> Envoi du message" >> "$s_machine_vote"
-echo "Génération d'un identifiant pour le message" >> "$s_machine_vote"
+echo "------> Envoi du message" >> "$LOCAL_DIR/$s_machine_vote"
+echo "Génération d'un identifiant pour le message" >> "$LOCAL_DIR/$s_machine_vote"
 
 id_vote=$(( RANDOM % 1000 + 1 ))
 message="${id_vote};${signature};${vote}"
 
+#echo "DEBUUUUUUUUUUUUUUUG: $message"
+
 #### SEND TLS
-echo $message >> "$db_liste_messages"
+# Chiffrement
+echo -n "$message" > "$LOCAL_DIR/$temp_connexion/message"
+#echo -n "04$message" > "$LOCAL_DIR/$temp_connexion/seq+message"
+#openssl sha256 -hmac "$(cat "$LOCAL_DIR/$temp_connexion/client-mackey.dat")" \
+#    "$LOCAL_DIR/$temp_connexion/seq+message" > "$LOCAL_DIR/$temp_connexion/HMAC_seq+message"
+#
+#echo -n "$(cat "$LOCAL_DIR/$temp_connexion/message")$(cat "$LOCAL_DIR/$temp_connexion/HMAC_seq+message")" \
+#    | openssl aes-256-cbc -nosalt -iv "$(cat "$LOCAL_DIR/$temp_connexion/client-iv.dat")" \
+#    -K "$(cat "$LOCAL_DIR/$temp_connexion/client-key.dat")" > "$LOCAL_DIR/$temp_connexion/message-chif"
+
+# Envoi
+echo $message >> "$LOCAL_DIR"/"$db_liste_messages"
+
+# Déchiffrement
+#echo -n "$(cat "$LOCAL_DIR/$temp_connexion/message-chif")" | openssl aes-256-cbc -d -nosalt \
+#    -iv "$(cat "$LOCAL_DIR/$temp_connexion/client-iv.dat")" -K "$(cat "$LOCAL_DIR/$temp_connexion/client-key.dat")" \
+#    > "$LOCAL_DIR/$temp_connexion/message-dec"
 
 # echo $signature | openssl base64 -d > signature.bin
 # echo $message | cut -d ';' -f 2 | openssl base64 -d | openssl dgst -sha256 -passin pass:azerty -verify temp/pki/votants/01_pub.key -signature signature.bin init.sh

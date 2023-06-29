@@ -47,11 +47,11 @@ source "$LOCAL_DIR/init.sh"
 echo -e "\n${cCyan}${aBold}Affectation${nc} de l'utilisateur à la machine 🪪"
 source "$LOCAL_DIR/affectation.sh"
 
-# echo -e "\n${cCyan}${aBold}Connexion${nc} de l'utilisateur 🔒"
-# source "$LOCAL_DIR/connexion.sh"
+echo -e "\n${cCyan}${aBold}Connexion${nc} de l'utilisateur 🔒"
+source "$LOCAL_DIR/connexion.sh"
 
-# echo -e "\n${cCyan}${aBold}Vote${nc} de l'utilisateur 🗳️"
-# source "$LOCAL_DIR/vote.sh"
+echo -e "\n${cCyan}${aBold}Vote${nc} de l'utilisateur 🗳️"
+source "$LOCAL_DIR/vote.sh"
 
 echo -e "\n${cCyan}${aBold}Dépouillement${nc} du scrutin 📺"
 source "$LOCAL_DIR/depouillement.sh"
