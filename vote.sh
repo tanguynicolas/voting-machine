@@ -62,4 +62,4 @@ echo $message >> "$LOCAL_DIR"/"$db_liste_messages"
 #    -iv "$(cat "$LOCAL_DIR/$temp_connexion/client-iv.dat")" -K "$(cat "$LOCAL_DIR/$temp_connexion/client-key.dat")" \
 #    > "$LOCAL_DIR/$temp_connexion/message-dec"
 
-echo "Message envoyé au serveur du bureau de vote à l'aide de TLS" >> $s_machine_vote
+echo "Message envoyé au serveur du bureau de vote à l'aide de TLS" >> $LOCAL_DIR/$s_machine_vote
